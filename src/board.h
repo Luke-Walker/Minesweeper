@@ -12,9 +12,9 @@ public:
     ~Board();
 
     void updateBoard();
-    void displayBoard();
     void renderBoard(SDL_Renderer *renderer);
     void chainTiles(int startX, int startY);
+    void showMines();
 
     Tile* getTile(int x, int y);
 

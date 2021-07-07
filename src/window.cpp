@@ -24,6 +24,8 @@ Window::~Window() {
 }
 
 bool Window::play() {
+    bool end = false;
+    bool result = false;
     while (true) {
         SDL_Event e;
         while (SDL_PollEvent(&e) > 0) {
@@ -31,6 +33,8 @@ bool Window::play() {
                 case SDL_QUIT:
                     return false;
                 case SDL_MOUSEBUTTONDOWN: {
+                    if (end) return result;
+
                     int mouseX = e.motion.x;
                     int mouseY = e.motion.y;
                     int x = mouseX/TILE_SCALE;
@@ -42,9 +46,18 @@ bool Window::play() {
                             if (!tile->isShown()) {
                                 // safety flag prevention
                                 if (!tile->isFlagged()) {
-                                    if (tile->isMine()) return false;
+                                    if (tile->isMine()) {
+                                        board->showMines();
+                                        end = true;
+                                        result = false;
+                                    } else {
+                                        this->board->chainTiles(x, y);
 
-                                    this->board->chainTiles(x, y);
+                                        if (this->board->isCompleted()) {
+                                            end = true;
+                                            result = true;
+                                        }
+                                    }
                                 }
                             }
 
@@ -66,7 +79,7 @@ bool Window::play() {
 
         render();
 
-        if (this->board->isCompleted()) return true;
+        //if (this->board->isCompleted()) return true;
     }
     return false;
 }

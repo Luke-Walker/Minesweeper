@@ -71,11 +71,17 @@ bool Tile::isShown() {
     return this->shown;
 }
 
-void Tile::toggleFlagged() { this->flagged = !this->flagged; }
+void Tile::toggleFlagged() {
+    this->flagged = !this->flagged;
+}
 
-void Tile::setFlagged(bool flagged) { this->flagged = flagged; }
+void Tile::setFlagged(bool flagged) {
+    this->flagged = flagged;
+}
 
-bool Tile::isFlagged() { return this->flagged; }
+bool Tile::isFlagged() {
+    return this->flagged;
+}
 
 bool Tile::isMine() {
     return this->value == -1;
@@ -85,4 +91,6 @@ void Tile::setRect(SDL_Rect rect) {
     this->rect = rect;
 }
 
-SDL_Rect Tile::getRect() { return this->rect; }
+SDL_Rect Tile::getRect() {
+    return this->rect;
+}

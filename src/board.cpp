@@ -82,17 +82,6 @@ void Board::updateBoard() {
     }
 }
 
-void Board::displayBoard() {
-    for (int i = 0; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-            int value = this->board[i][j].getValue();
-            if (value == -1) std::cout << "X" << "\t";
-            else std::cout << value << "\t";
-        }
-        std::cout << std::endl;
-    }
-}
-
 void Board::renderBoard(SDL_Renderer *renderer) {
     for (int i = 0; i < this->width; ++i) {
         for (int j = 0; j < this->height; ++j) {
@@ -127,6 +116,16 @@ void Board::chainTiles(int startX, int startY) {
                     yS.push(y+dy);
                 }
             }
+        }
+    }
+}
+
+void Board::showMines() {
+    for (int i = 0; i < this->width; ++i) {
+        for (int j = 0; j < this->height; ++j) {
+            Tile *tile = &this->board[i][j];
+
+            if (tile->isMine()) tile->setShown(true);
         }
     }
 }
