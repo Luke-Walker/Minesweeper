@@ -43,39 +43,28 @@ Board::~Board() {
     delete[] this->board;
 }
 
+// Updates the values of the tiles
 void Board::updateBoard() {
     for (int i = 0; i < width; ++i) {
         for (int j = 0; j < height; ++j) {
             Tile *tile = &board[i][j];
             if (tile->getValue() == -1) continue;
 
-            /*
-             *  1 2 3
-             *  4 X 5
-             *  6 7 8
-             */
-
             int val = 0;
             bool top = i > 0;
             bool bottom = i < width-1;
             bool left = j > 0;
             bool right = j < height-1;
-            if (top && left)
-                val += board[i-1][j-1].isMine(); // 1
-            if (top)
-                val += board[i-1][j].isMine(); // 2
-            if (top && right)
-                val += board[i-1][j+1].isMine(); // 3
-            if (left)
-                val += board[i][j-1].isMine(); // 4
-            if (right)
-                val += board[i][j+1].isMine(); // 5
-            if (bottom && left)
-                val += board[i+1][j-1].isMine(); // 6
-            if (bottom)
-                val += board[i+1][j].isMine(); // 7
-            if (bottom && right)
-                val += board[i+1][j+1].isMine(); // 8
+
+            for (int k = -1; k <= 1; ++k) {
+                if ((k == -1 && !top) || (k == 1 && !bottom)) continue;
+
+                for (int l = -1; l <= 1; ++l) {
+                    if ((k == 0 && l == 0) || (l == -1 && !left) || (l == 1 && !right)) continue;
+
+                    val += board[i+k][j+l].isMine();
+                }
+            }
 
             tile->setValue(val);
         }
@@ -91,14 +80,14 @@ void Board::renderBoard(SDL_Renderer *renderer) {
 }
 
 void Board::chainTiles(int startX, int startY) {
-    std::stack<int> xS;
-    std::stack<int> yS;
-    xS.push(startX);
-    yS.push(startY);
+    std::stack<int> xs;
+    std::stack<int> ys;
+    xs.push(startX);
+    ys.push(startY);
 
-    while (xS.size() > 0) {
-        int x = xS.top(); xS.pop();
-        int y = yS.top(); yS.pop();
+    while (xs.size() > 0) {
+        int x = xs.top(); xs.pop();
+        int y = ys.top(); ys.pop();
         Tile *tile = this->getTile(x, y);
 
         if (tile->isShown()) continue;
@@ -112,8 +101,8 @@ void Board::chainTiles(int startX, int startY) {
                 for (int dy = -1; dy <= 1; ++dy) {
                     if (y+dy < 0 || y+dy >= this->height) continue;
                     if (dx == 0 && dy == 0) continue;
-                    xS.push(x+dx);
-                    yS.push(y+dy);
+                    xs.push(x+dx);
+                    ys.push(y+dy);
                 }
             }
         }
